@@ -1,0 +1,4 @@
+interface:
+  display_name: "I Have ADHD 简体中文版"
+  short_description: "自然简体中文回复，答案先行、步骤清楚、进度可见，保留必要细节和技术原文"
+  default_prompt: "使用 $i-have-adhd-zh-cn，让本次会话的回复以自然简体中文直接给出答案、结果或必要行动。"

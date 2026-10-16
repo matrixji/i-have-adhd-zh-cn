@@ -1,101 +1,21 @@
-# Contributing
+# 贡献指南
 
-Thanks for improving **i-have-adhd**. Contributions from humans and coding agents are welcome. Keep changes understandable, reviewable, safe to run, and compatible with existing users.
+修改围绕简体中文回复风格、安装文档、验证或上游迁移展开。先阅读 [AGENTS.md](AGENTS.md) 与[上游同步说明](docs/upstream.md)。
 
-## Authorship and provenance
+## 内容与兼容性
 
-Every pull request must select exactly one category:
+使用自然简体中文，代码、命令、路径和错误原文保持不变。保留必要解释、完整清单、事实中的不确定性和用户指定格式。不要引入医疗判断、虚构测量结果，或借回复风格扩大工具权限。
 
-- **Human-authored** — a human made the substantive implementation and text. Autocomplete, formatting, search, and minor suggestions do not make a contribution hybrid.
-- **Autonomous agent-authored** — an agent made most substantive decisions and changes, with a human primarily providing the task and reviewing the result.
-- **Hybrid** — a human and one or more agents both made substantive decisions or changes.
+这是独立的标准 Skill 版本。不要因同步上游而恢复已移除的插件清单、运行时扩展或后台钩子。改名、移动公开 Skill 或修改启停方式时，更新安装文档并提供迁移说明。
 
-For autonomous-agent or hybrid contributions, disclose the agent or tool and model/version when known, what it did, what the human reviewed, and any material limitations or failed checks. Do not call generated work human-authored or independently verified when it was only reviewed by the same agent that produced it.
+## 验证与评测
 
-The submitting human remains accountable for the full diff. Before submission, read the changed files, remove unrelated generated changes, and verify the claims in the PR description.
+运行 [README.md](README.md#验证) 中的本地检查。新增规则时同步代表性用例；涉及持续性或话题切换时检查多轮场景。真实模型评测按 [evals/README.md](evals/README.md) 执行，使用隔离配置，预先确定费用上限，保留模型、CLI、条件、用例、轮次与评分标准。
 
-## Labels
+结构检查和使用桩的单元测试不证明模型行为。未运行的评测要明确披露，不填写虚构分数或通过记录。测试不访问生产系统，不执行模型输出，不读取凭证或无关用户文件。
 
-Use one label from each applicable group:
+## 提交与来源
 
-- **Target:** `Target:Integrations` for a CLI integration, `Target:Evals` for evaluation scripts, `Target:Rules` for skill rules, or `Target:Docs` for documentation and translations.
-- **Author:** `Author:Human`, `Author:Hybrid`, or `Author:AI`, matching the authorship category above.
-- **Workflow:** `bug` for defects, `enhancement` for new features, `issue` for general issue tracking, `question` when more information is needed, or `duplicate` when the issue or PR already exists.
+PR 说明选择一项作者类别：人工编写、自动代理编写或人机协作。使用代理时披露工具及已知模型、参与范围、人工实际审核内容和验证限制。最终提交者对完整差异负责。
 
-Choose the labels that describe the change; do not use labels as a substitute for the PR description or provenance disclosure. Use `issue` only when no more specific workflow label applies.
-
-## Scope and reviewability
-
-Keep each PR focused. Avoid drive-by formatting, unrelated dependency changes, generated filler, and broad rewrites that make behavior changes difficult to inspect.
-
-The PR description must explain:
-
-1. what changed and why;
-2. observable behavior before and after;
-3. safety, compatibility, and side-effect considerations;
-4. the exact verification performed.
-
-Discuss large behavior changes, new integrations, new hooks, and potentially breaking changes in an issue first.
-
-## Safety and side effects
-
-Contributions must not weaken platform safeguards, override higher-priority instructions, conceal risky behavior, or encourage inaccurate claims.
-
-Skill changes must stay focused on response structure and usability. Do not add instructions, examples, fixtures, or tests that tell an agent to:
-
-- read or transmit credentials, tokens, environment variables, private files, or repository data;
-- modify shell profiles, global Git configuration, editor settings, or unrelated agent configuration;
-- bypass confirmation for destructive, privileged, production, or externally visible actions;
-- silently install software, fetch and execute remote code, or create persistence;
-- misrepresent medical information or imply that this skill diagnoses ADHD.
-
-Installation, activation, validation, tests, and evaluations must be narrowly scoped and predictable. By default, repository code must not modify files outside the repository or a documented temporary directory, alter user configuration or credentials, publish or send data, require elevated privileges, perform irreversible actions, or leave background processes behind. Intentional writes outside the repository require explicit opt-in, documentation, a specific path, and an easy undo path.
-
-## Hooks, scripts, and evaluations
-
-Hooks run in user environments: keep them fast, bounded, fail-safe, opt-in, and free of unnecessary network access. Optional failures must not block agent startup.
-
-Scripts and workflows must validate inputs and paths, avoid shell commands built from untrusted text, use temporary fixtures, avoid secrets and undeclared uploads, and use least privilege. New third-party actions, packages, CLIs, or network calls need a clear justification and data/permission description.
-
-Evaluation code must not execute model output, access production systems or unrelated user files, perform externally visible actions, or create unbounded cost. Provider-backed evaluations need explicit budgets, recorded runner/model/CLI/cases/trials/rubric, and comparable conditions. Unit tests for eval code should use stubs and temporary files without network or paid model calls.
-
-## Compatibility and breaking changes
-
-Preserve existing installation methods, invocation names, file locations, opt-in behavior, and supported integrations unless a breaking change is explicitly accepted. Potentially breaking changes include moving the canonical skill, changing invocation or hook semantics, changing manifests or installation commands, and removing a supported platform.
-
-A breaking change requires an issue, migration path, updated documentation, and a compatibility or deprecation plan. Prefer additive, staged changes.
-
-`skills/i-have-adhd/SKILL.md` is canonical. When it changes, synchronize the Cursor copy:
-
-```sh
-cp skills/i-have-adhd/SKILL.md .cursor/skills/i-have-adhd/SKILL.md
-cmp skills/i-have-adhd/SKILL.md .cursor/skills/i-have-adhd/SKILL.md
-```
-
-Review platform-specific manifests and documentation whenever shared names, descriptions, paths, or behavior change.
-
-Keep `.opencode/command/i-have-adhd.md` frontmatter as a JSON object between the `---` delimiters. JSON is valid YAML, so OpenCode's native loader and the global plugin can share the same command metadata without an additional parser dependency.
-
-## Verification
-
-Run relevant checks and include the commands and results in the PR. For Python and evaluation-harness changes:
-
-```sh
-python3 -m unittest discover -s tests -v
-python3 scripts/run_evals.py validate
-```
-
-For behavior changes, add or update representative eval cases when needed, run paired baseline/candidate evaluations under the same conditions, and apply the release gate. For hook or plugin changes, verify loading in an isolated configuration directory. If a check was not run, say so and explain why; never invent results or treat inspection as execution.
-
-## Documentation and checklist
-
-Keep examples safe to copy: use harmless fixtures, explicit placeholders, and read-only previews. Never include real secrets, personal paths, production identifiers, or commands that could damage a reader's environment. Distinguish required behavior from suggestions and avoid unsupported medical, accessibility, platform, or performance claims.
-
-A PR is ready when:
-
-- one authorship category is selected and agent involvement is disclosed accurately;
-- the full diff has been reviewed by a human contributor;
-- the change is focused and free of unrelated generated edits;
-- side effects, compatibility, costs, and verification are documented.
-
-Maintainers may close PRs that conceal provenance, introduce unsafe behavior, lack verification, or make unplanned breaking changes.
+说明具体问题、修改后的行为、兼容性影响，以及实际运行的检查。保留原始 MIT 版权声明及来源致谢；不要把本地 `.agents/skills/`、缓存、评测私有输出或凭证加入提交。

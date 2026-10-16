@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "local": {
+    "repository": "https://github.com/matrixji/i-have-adhd-zh-cn",
+    "skill_path": "skills/i-have-adhd-zh-cn/SKILL.md"
+  },
+  "sources": {
+    "upstream": {
+      "url": "https://github.com/ayghri/i-have-adhd.git",
+      "branch": "main",
+      "reviewed_commit": "1ecea1993b7fce257ffbd686c070948b5e07eda6",
+      "skill_path": "skills/i-have-adhd/SKILL.md"
+    },
+    "reference-zh-tw": {
+      "url": "https://github.com/panda850819/i-have-adhd-zh-tw.git",
+      "branch": "main",
+      "reviewed_commit": "182a945d1c9853b3f2d064275c5d3dceba4eceee",
+      "skill_path": "skills/i-have-adhd-zh-tw/SKILL.md"
+    }
+  }
+}

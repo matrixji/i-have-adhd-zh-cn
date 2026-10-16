@@ -1,60 +1,7 @@
-# Persistence through a debug spiral
+# 持续应用、话题切换与关闭
 
-`case.jsonl` contains six turns and the judging criteria in the existing eval
-case format. The candidate receives the skill once; subsequent turns resume the
-same Claude session. The baseline receives the same tasks without the skill.
-The existing prompt helper strips skill metadata before injection.
+同一会话先提出一个英文问题，再切换到 Git 概念解释，单次指定英文输出，随后返回默认语言，最后关闭模式并验证关闭后的语言选择。
 
-This evaluates topic-switch persistence, stopping code suggestions after three
-reported failures, and the stop acknowledgment. It does not establish internal
-mode state, behavior after stopping, plugin loading, or compaction handling.
-Existing Pi smoke tests cover native enable/disable state separately.
+candidate 从第一轮注入完整简体 Skill；baseline 不注入。预期 candidate 在未另行指定语言时使用简体中文，单次英文要求不关闭模式，明确关闭后不再由 Skill 强制简体中文。关闭不能撤销宿主的其他语言要求，因此评测需要隔离配置。
 
-## Capture
-
-Validate offline:
-
-```sh
-python3 scripts/run_scenario_eval.py validate evals/scenarios/persistence-topic-switch-stop
-```
-
-After approving provider spending, run each condition with the same explicit
-model, budget, and trial number. For example (each invocation allows up to $1):
-
-```sh
-python3 scripts/run_scenario_eval.py run \
-  --scenario evals/scenarios/persistence-topic-switch-stop \
-  --condition baseline --model <model-id> --trial 1 --budget-usd 1 \
-  --output /tmp/adhd-baseline.jsonl
-python3 scripts/run_scenario_eval.py run \
-  --scenario evals/scenarios/persistence-topic-switch-stop \
-  --condition candidate --condition-skill skills/i-have-adhd/SKILL.md \
-  --model <model-id> --trial 1 --budget-usd 1 \
-  --output /tmp/adhd-candidate.jsonl
-```
-
-Output paths must be new. Each successful run saves one response row containing
-the complete conversation, compatible with `scripts/judge.py`. Failed captures
-leave an empty output file; they cannot be mistaken for completed conversations.
-Exit status zero means capture completed, not that the skill passed.
-
-## Judge
-
-Combine the baseline and candidate rows into a new JSONL file. Use the existing
-[judge and score workflow](../../README.md#judge-and-score), passing
-`--cases evals/scenarios/persistence-topic-switch-stop/case.jsonl` to the judge.
-It compares the complete conversations blind using the existing rubric and
-release gate. Manual grading is also supported there.
-
-Judge spending is separate: approve it explicitly and configure its provider
-spending cap before running. For one pair, use `--retries 0` and a Claude runner
-command with `--max-budget-usd`, an explicit model, `--safe-mode`, `--tools ""`,
-`--strict-mcp-config`, and `--no-session-persistence`. Record CLI/model versions,
-trial numbers, rubric, costs, and results. Stub tests do not verify model adherence.
-
-Capture uses an empty temporary working directory, safe mode, no tools, closed
-stdin, and a 120-second deadline per call. Budgets must be positive and at most
-$25 per capture. Unknown additional spend after timeouts or malformed responses
-is reported as unknown. Safe mode retains authentication and managed policies;
-Claude sessions may persist in its configured storage. Live calls send the
-scenario, candidate skill when selected, and conversation to the provider.
+这个场景只验证文本行为，不执行 Git 命令、不修改文件。评分以完整转录为单位，尤其检查后续轮次，不能只看第一轮是否应用。

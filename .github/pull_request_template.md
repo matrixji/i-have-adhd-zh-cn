@@ -1,64 +1,24 @@
-## Summary
+## 修改内容
 
-<!-- What changed, why it is needed, and the observable behavior before and after. -->
+<!-- 问题、修改后行为、涉及的上游版本与本地化取舍。 -->
 
-## Authorship and provenance — select exactly one
+## 作者与来源
 
-- [ ] **Human-authored** — substantive implementation and text were produced by a human.
-- [ ] **Autonomous agent-authored** — an agent planned and produced most of the substantive change.
-- [ ] **Hybrid** — a human and one or more agents both made substantive contributions.
+- [ ] 人工编写
+- [ ] 自动代理编写
+- [ ] 人机协作
 
-**Agent/tool and model/version:** <!-- Write “None” for human-authored PRs. -->
+<!-- 使用的工具/已知模型、代理参与范围、人工实际审核内容。 -->
 
-**Agent contribution:** <!-- Planning, code, tests, docs, review, or other work. -->
+## 验证
 
-**Human verification:** <!-- What the submitting human personally reviewed and ran. -->
+<!-- 只列实际运行的命令与结果；区分结构/单元验证与真实模型评测。 -->
+<!-- 模型评测记录 CLI、模型、用例、轮次、评分标准、费用与发布判断。 -->
 
-**Known limitations or uncertain results:** <!-- Write “None known” only after review. -->
+## 兼容性与限制
 
-## Labels
+<!-- 安装、启停、权限或文件位置的影响；未完成验证和迁移方式。 -->
 
-**Target label:** <!-- Select exactly one: Target:Integrations, Target:Evals, Target:Rules, or Target:Docs. -->
-
-**Author label:** <!-- Select exactly one: Author:Human, Author:Hybrid, or Author:AI. -->
-
-**Workflow labels:** <!-- Add applicable labels: bug, enhancement, issue, question, or duplicate. -->
-
-## Safety and side effects
-
-- [ ] The change does not access or expose secrets, private files, or unrelated user/repository data.
-- [ ] Scripts, hooks, workflows, and evals are bounded and do not create surprising or irreversible side effects.
-- [ ] No destructive, privileged, production, externally visible, or persistent action occurs without explicit user intent and appropriate safeguards.
-- [ ] Network access, third-party code, permissions, and provider costs are minimized and documented.
-- [ ] Prompt text, examples, and fixtures contain no hidden instructions that weaken safety or expand agent authority.
-
-**Side effects, permissions, network access, and cost:**
-
-<!-- State “None” when applicable; otherwise describe exact scope and rollback. -->
-
-## Compatibility
-
-- [ ] This is not a breaking change.
-- [ ] This is a breaking change; it was discussed, and migration/deprecation documentation is included below.
-- [ ] Canonical and mirrored skill files are synchronized when applicable.
-- [ ] Relevant platform manifests and installation documentation were reviewed.
-
-**Migration or rollback notes:**
-
-## Verification
-
-<!-- List only commands actually run and their results. Remove unrun examples. -->
-
-<!-- Common checks, when relevant:
-python3 -m unittest discover -s tests -v
-python3 scripts/run_evals.py validate
--->
-
-- `<command>` — `<result>`
-
-**Behavior evals:** <!-- Required for material skill-behavior changes; include runner/model/cases/trials/rubric and release-gate result. -->
-
-## Final accountability
-
-- [ ] I reviewed the complete diff, removed unrelated generated changes, and take responsibility for the submitted content.
-- [ ] All failed, skipped, or unrun checks are disclosed above.
+- [ ] 保留来源致谢和原始 MIT 声明。
+- [ ] 没有提交 .agents/skills/、缓存、私有评测输出或凭证。
+- [ ] 未意外恢复上游平台插件、钩子或其他语言 Skill。
